@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -52,9 +53,9 @@ public class IndividualIO {
 	{
 		ArrayList<Individual> i = new ArrayList<Individual>();		
 		Filter filter = new FilterPredicate("memberid",FilterOperator.EQUAL,k);
-		Query q = new Query("individual"); //.setAncestor(k);
-		q.setFilter(filter);
-		List<Entity> le = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Query q = new Query(Individual.class.getName()).setAncestor(k).setFilter(filter);
+		PreparedQuery pq = datastore.prepare(q);
+		List<Entity> le = pq.asList(FetchOptions.Builder.withDefaults());
 		for(Entity e: le)
 		{
 			i.add(setIndividual(e));
@@ -69,8 +70,8 @@ public class IndividualIO {
 			i.setMemberId((Key) e.getProperty("memberid"));
 			i.setId(e.getKey());
 			i.setName((String) e.getProperty("name"));
-			i.setAdult((boolean) e.getProperty("isadult"));
 			i.setDob((Long) e.getProperty("dob"));
+			i.setAdult((boolean) (Common.getAge(i.getDob()) > 17));
 			i.setGender((String) e.getProperty("gender"));			
 		}
 		return i;		

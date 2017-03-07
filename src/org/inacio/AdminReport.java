@@ -67,7 +67,7 @@ public class AdminReport extends HttpServlet {
 			htmlContent.append("<body><header></header><nav></nav><div class=registration>");
 			htmlContent.append("<table border=1><tr>");
 			htmlContent.append("<th>").append(member.getName()).append("</th><th>").append(member.getAddress()).append("<br/>").append(member.getCsz())
-			  .append("</th><th>").append(member.getRate()).append("</th></tr>");
+			  .append("</th><th colspan=2>").append(member.getRate()).append("</th></tr>");
 			for(Individual i:individuals) {
 				htmlContent.append("<tr><td>&nbsp;</td><td>").append(i.getName()).append("</td><td>").append(Common.getAge(i.getDateOfBirth())).append("</td><td>").append(i.getGender()).append("</td></tr>");
 			}

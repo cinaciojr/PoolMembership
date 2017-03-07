@@ -89,14 +89,13 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			ind.setMemberId(member.getId());
 			if (!ind.getName().trim().isEmpty()) {
 				ind.setId(IndividualIO.add(ind));
+				individuals.add(ind);
 			}
 		}
 		member.setTotalAmt(Common.computeAmt(member,individuals));
 		member.add();
-		String htmlContent = subTotal(member,individuals);
-		ServletOutputStream out;
-		try {
-			out = resp.getOutputStream();
+		String htmlContent = subTotal(member,individuals);		
+		try (ServletOutputStream out = resp.getOutputStream()){			
 			out.print(htmlContent);
 			out.close();
 		} catch (IOException e) {
