@@ -1,5 +1,7 @@
 package org.inacio;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,8 +11,11 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 
 public class MemberIO {
 	final static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -37,7 +42,22 @@ public class MemberIO {
 			return null;
 		}
 	}
-	
+	public static ArrayList<Member> getAllMembers() {
+		ArrayList<Member> members = new ArrayList<Member>();
+		try {
+			Query q = new Query(Member.class.getName());
+			PreparedQuery pq = datastore.prepare(q);
+			List<Entity>  le = pq.asList(FetchOptions.Builder.withDefaults());
+			for(Entity e:le) {
+				Member m = setMember(e);
+				members.add(m);
+			}
+		} catch (Exception e1) {
+			LOG.log(Level.SEVERE,e1.getMessage());
+			return null;			
+		}
+		return members;
+	}
 	public static Member setMember(Entity e)
 	{
 		Member m = null;

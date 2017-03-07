@@ -1,64 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">	
-	<display-name>PoolMemberSignUp</display-name>
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
-	</welcome-file-list>
-	<!-- servlet>
-		<servlet-name>payPalServlet</servlet-name>
-		<servlet-class>org.inacio.processPayment</servlet-class>
-	</servlet-->
-	<servlet>
-		<description>PoolMemberSignUpServlet</description>
-		<display-name>PoolMemberSignUpServlet</display-name>
-		<servlet-name>PoolMemberSignUpServlet</servlet-name>
-		<servlet-class>org.inacio.PoolMemberSignUpServlet</servlet-class>
-		
-		<!-- SANDBOX Settings -->
-		<init-param>
-			<param-name>PPAPIUsername</param-name>
-			<param-value>swimsealions-facilitator_api1.gmail.com</param-value>
-		</init-param>
-		<init-param>
-			<param-name>PPAPIPassword</param-name>
-			<param-value>1408052236</param-value>
-		</init-param>
-		<init-param>
-			<param-name>PPAPISignature</param-name>
-			<param-value>AFcWxV21C7fd0v3bYYYRCpSSRl31AnD4uLY651KzhZy0ddR9U-35qdVz</param-value>
-		</init-param>
-		<init-param>
-			<param-name>PPAppID</param-name>
-			<param-value>APP-80W284485P519543T</param-value>
-		</init-param>
-		<init-param>
-			<param-name>PPAccountEmail</param-name>
-			<param-value>swimsealions-facilitator@gmail.com</param-value>
-		</init-param>
-		<init-param>
-			<param-name>PPEnvironment</param-name>
-			<param-value>SANDBOX</param-value>
-		</init-param>
-		<!-- PRODUCTION Settings -->
-		<!-- init-param> <param-name>PPAPIUsername</param-name> <param-value>swimsealions_api1.gmail.com</param-value> 
-			</init-param> <init-param> <param-name>PPAPIPassword</param-name> <param-value>MQ737GDMQD3EDQPM</param-value> 
-			</init-param> <init-param> <param-name>PPAPISignature</param-name> <param-value>AqHY4FzU6r9bPNpJzPNmNYPwU6cJAWOX1llGWzYxoFz0XQkybVV8mMnv</param-value> 
-			</init-param> <init-param> <param-name>PPAppID</param-name> <param-value>APP-9LC47719S2848551X</param-value> 
-			</init-param> <init-param> <param-name>PPAccountEmail</param-name> <param-value>swimsealions@gmail.com</param-value> 
-			</init-param> <init-param> <param-name>PPEnvironment</param-name> <param-value>PRODUCTION</param-value> 
-			</init-param -->
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>PoolMemberSignUpServlet</servlet-name>
-		<url-pattern>/poolmembersignup</url-pattern>
-	</servlet-mapping>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>PoolMemberSignUp</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description>PoolMemberSignUpServlet</description>
+    <display-name>PoolMemberSignUpServlet</display-name>
+    <servlet-name>PoolMemberSignUpServlet</servlet-name>
+    <servlet-class>org.inacio.PoolMemberSignUpServlet</servlet-class>
+    <init-param>
+      <param-name>PPAPIUsername</param-name>
+      <param-value>swimsealions-facilitator_api1.gmail.com</param-value>
+    </init-param>
+    <init-param>
+      <param-name>PPAPIPassword</param-name>
+      <param-value>1408052236</param-value>
+    </init-param>
+    <init-param>
+      <param-name>PPAPISignature</param-name>
+      <param-value>AFcWxV21C7fd0v3bYYYRCpSSRl31AnD4uLY651KzhZy0ddR9U-35qdVz</param-value>
+    </init-param>
+    <init-param>
+      <param-name>PPAppID</param-name>
+      <param-value>APP-80W284485P519543T</param-value>
+    </init-param>
+    <init-param>
+      <param-name>PPAccountEmail</param-name>
+      <param-value>swimsealions-facilitator@gmail.com</param-value>
+    </init-param>
+    <init-param>
+      <param-name>PPEnvironment</param-name>
+      <param-value>SANDBOX</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PoolMemberSignUpServlet</servlet-name>
+    <url-pattern>/poolmembersignup</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AdminReport</display-name>
+    <servlet-name>AdminReport</servlet-name>
+    <servlet-class>org.inacio.AdminReport</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminReport</servlet-name>
+    <url-pattern>/AdminReport</url-pattern>
+  </servlet-mapping>
 </web-app>
