@@ -61,7 +61,8 @@ public class AdminReport extends HttpServlet {
 			members.add(member);
 		}
 		for(Member member:members) {
-			ArrayList<Individual> individuals = IndividualIO.getIndividualsOfMember(member.getId());
+			ArrayList<Individual> individuals = new ArrayList<Individual>();
+			individuals = IndividualIO.getIndividualsOfMember(member.getId());
 			htmlContent.append(Common.getHeader());
 			htmlContent.append("<body><header></header><nav></nav><div class=registration>");
 			htmlContent.append("<table border=1><tr>");

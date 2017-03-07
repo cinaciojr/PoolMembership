@@ -87,9 +87,8 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			ind.setGender(((String[]) map.get("indgender" + i))[0]);
 			ind.setName(((String[]) map.get("indname" + i))[0].trim());
 			ind.setMemberId(member.getId());
-			ind.setId(IndividualIO.add(ind));
 			if (!ind.getName().trim().isEmpty()) {
-				individuals.add(ind);
+				ind.setId(IndividualIO.add(ind));
 			}
 		}
 		member.setTotalAmt(Common.computeAmt(member,individuals));
