@@ -258,11 +258,13 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		member = MemberIO.get(id);
 		ArrayList<Individual> individuals = IndividualIO.getIndividualsOfMember(member.getId());
 		String paypal = req.getParameter("payId");
-		member.setTransactionId(paypal);
-		member.setDatePaid(Calendar.getInstance().getTimeInMillis());
-		member.add();
+		if(paypal != null && !paypal.equals(member.getTransactionId())) {
+			member.setTransactionId(paypal);
+			member.setDatePaid(Calendar.getInstance().getTimeInMillis());
+			member.add();
+		}
 		sb.append(Common.getHeader());
-		sb.append("<body>");
+		sb.append("<body><a href=\"http://www.wedgewoodhillsswimclub.com\"><header></header></a><nav></nav>");
 		sb.append("<div class=receipt><table>");
 		sb.append("<tr><td>").append(poolName).append("</td><td>&nbsp;</td></tr>");
 		sb.append("<tr><td>").append(poolAddress).append("</td><td>&nbsp;</td></tr>");
@@ -275,10 +277,13 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 				.append(formatter.format(member.getTotalAmt())).append("</td></tr>");
 		sb.append("<tr><td>&nbsp;</td><td>").append(dteFmt.format(cal.getTime())).append("</td></tr>");
 		String transId = member.getTransactionId();		
-		sb.append("<tr><td>&nbsp;</td><td>").append((transId)).append("</td></tr>");
+		if(transId != null) {
+			sb.append("<tr><td>&nbsp;</td><td>").append((transId)).append("</td></tr>");
+		}
 		sb.append("<tr><td>&nbsp;</td><td>Member Id: E-").append(id.substring(id.length()-5)).append("</td></tr>");
 		sb.append("</table></div>");
 		Individual ind;
+		Calendar now = Calendar.getInstance();
 		for (int i = 0; i < individuals.size(); i++) {
 			ind = individuals.get(i);
 			sb.append("<div class=\"memberCard ").append(member.getRate().toUpperCase());
@@ -287,7 +292,10 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			}
 			sb.append("\">");
 			sb.append("<table>");
-			sb.append("<tr><td>").append(ind.getName()).append("</td></tr>");
+			sb.append("<tr><td colspan=2><img src=/images/logo.png /></td></tr>");
+			sb.append("<tr><td><span style=\"text-decoration: normal;font-size: .8em;\">").append(member.getRate().trim().toUpperCase()).append(": ").append(member.getName()).append("</span></td><td><span style=\"text-decoration: normal;font-size: .8em;\">Member Id: E-").append(id.substring(id.length()-5)).append("</span></td></tr>");
+			sb.append("<tr><td colspan=2><span style=\"text-decoration: bold;font-size: 1.5em;\">Member: ").append(ind.getName()).append("</span></td></tr>");
+			sb.append("<tr><td colspan=2 align=center><span style=\"text-decoration: normal;font-size: .6em;\">").append(poolName).append(" ").append(now.get(Calendar.YEAR)).append("  Season ").append("</span></td></tr>");
 			sb.append("</table>");
 			sb.append("</div>");
 		}

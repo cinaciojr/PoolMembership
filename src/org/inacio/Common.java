@@ -66,8 +66,10 @@ public class Common {
 		sb.append(".registration {min-height: 100px; min-width: 600px;max-width:800px;margin: 0px auto;border: 1px solid yellow;border-radius: 18px 18px 0 0;}");
 		sb.append(".registration table {width: 100%;}");
 		sb.append(".registration tr:nth-child(odd){border: 2px solid yellow;}");
-		sb.append(".receipt {border: 2px solid black;max-width: 800px; background-color: light blue}");
-		sb.append(".memberCard {border: 2px solid red;max-width:600px;background-color: yellow;}");
+		sb.append(".receipt {min-height: 100px; min-width: 600px;max-width:800px;margin: 0px auto;border-radius: 18px 18px 0 0;border: 2px solid black;}");
+		sb.append(".memberCard {height: 200px; width: 320px;margin: 0px auto;border: 2px solid red;background-color: yellow;color:black;}");
+		sb.append(".memberCard td {color:black;}");
+		sb.append(".memberCard img {height: 100px; width: 320px;}");
 		sb.append(".label {text-align: right; vertical-align: bottom;}");
 		sb.append(".input {text-align: left;vertical-align: bottom;}");
 		sb.append(".family {}");
