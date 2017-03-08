@@ -11,46 +11,60 @@ public class Common {
 		if (member.getRate().equals("teen") && getAge(individuals.get(0).getDateOfBirth()) > 18) {
 			member.setRate("single");
 		}
+		int adult = 0;
+		int college = 0;
+		int child = 0;
+		int teen = 0;
+		for(Individual i:individuals) {
+			if(i.isAdult()) {adult++;}	
+			else if(getAge(i.getDateOfBirth()) > 11) { teen++; }	
+			else { child++; }			
+			
+			if(getAge(i.getDateOfBirth()) > 17 && getAge(i.getDateOfBirth()) < 23) college++;  // These are counted as adults and college
+		}
 		if (member.getRate().equals("family")) {
 			amt = 295.00f;
 			discAmt = -25.00f;
+			if((adult-college) > 2) { amt += 195 * (adult - college - 2); }			// Reducing adult by value of college for the family calculation
+			if((college+teen+child) > 4) { amt += 25 * (college + teen + child - 4); }  // Combining college teens and children for the family calculation
 		} else if (member.getRate().equals("teen")) {
 			amt = 75.00f;
-			if (individuals.size() > 1) {
-				amt = 75.00f * individuals.size();
-			}
+			if(teen > 1) { amt += 75.0f * (teen - 1);}  //  Multiple teens on a single membership ??
+			if(adult > 0) { amt += 195.0f * adult; } // Teen having others?
+			if(child > 0) { amt += 25.0f * child; }  // Teen having others?
 		} else if (member.getRate().equals("single")) {
 			amt = 195.00f;
-			if (individuals.size() > 1) {
-				amt = 195.00f * individuals.size();
-			}
 			discAmt = -20.00f;
+			if(adult > 1) { amt += 195.0f * (adult-1); }  
+			if(teen > 0) { amt += 75.0f * teen;}      // Single Parent plus teen $75 ??
+			if(child > 0) { amt += 25.0f * child; }   //  Single Parent plus children  $25 ??
 		} else if (member.getRate().equals("couple")) {
 			amt = 250.00f;
-			if (individuals.size() > 2) {
-				amt = 250.00f + (195.00f * (individuals.size() - 2));
-			}
 			discAmt = -30.00f;
+			if(adult > 2) { amt += 195.0f * (adult - 2);}
+			if(teen > 0) { amt += 75.0f * teen; }
+			if(child > 0) { amt += 25.0f * child; }  // Couple plus 1 child is $275 which is less than the family plan
 		} else if (member.getRate().equals("senior")) {
 			amt = 135.00f;
-			if (individuals.size() > 1) {
-				amt = 135.00f * individuals.size();
-			}
 			discAmt = -15.00f;
+			if(adult > 1) { amt += 195.0f * (adult - 1);}
+			if(teen > 0) { amt += 75.0f * teen; }
+			if(child > 0) { amt += 25.0f * child; }  // Senior plus 6 child is $285 which is less than the family plan			
 		} else if (member.getRate().equals("seniorcouple")) {
 			amt = 185.00f;
-			if (individuals.size() > 2) {
-				amt = 185.00f + (135.00f * (individuals.size() - 2));
-			}
 			discAmt = -35.00f;
+			if(adult > 2) { amt += 195.0f * (adult - 2);}
+			if(teen > 0) { amt += 75.0f * teen; }
+			if(child > 0) { amt += 25.0f * child; }  // Senior Couple plus 4 child is $285 which is less than the family plan			
 		} else if (member.getRate().equals("babysitter")) {
 			amt = 60.00f;
-			if (individuals.size() > 1) {
-				amt = 195.00f * individuals.size();
-			}
+			if(adult > 1) { amt += 195.0f * (adult - 1);}
+			if(teen > 0) { amt += 75.0f * teen; }
+			if(child > 0) { amt += 25.0f * child; }  // Senior Couple plus 4 child is $285 which is less than the family plan			
 		}
 		Calendar now = Calendar.getInstance();
 		Calendar disc = Calendar.getInstance();
+		disc.set(2017, 5, 23, 23, 59);
 		if (disc.after(now)) {
 			amt += discAmt;
 		}
