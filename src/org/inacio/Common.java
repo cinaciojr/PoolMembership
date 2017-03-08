@@ -1,9 +1,25 @@
 package org.inacio;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class Common {
+	final static Logger LOG = Logger.getLogger(Common.class.getName());
 	
 	public static double computeAmt(Member member,ArrayList<Individual> individuals) {
 		double amt = 0f;
@@ -142,5 +158,43 @@ public class Common {
 			age--;
 		}
 		return age;
+	}
+	
+	public static void sendEmail(String[] toEmail, String[] ccEmail, String[] bccEmail, String frmEmail, String subject, String content) {
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+
+		try {
+		  Message msg = new MimeMessage(session);
+		  if(frmEmail == null) { return; }
+		  if(toEmail == null && ccEmail == null && bccEmail == null) {return;}
+		  msg.setFrom(new InternetAddress(frmEmail));
+		  for(String s:toEmail) {
+			  msg.addRecipient(Message.RecipientType.TO, new InternetAddress(s, s));
+		  }
+		  if(ccEmail != null) {
+			  for(String s:ccEmail) {
+				  msg.addRecipient(Message.RecipientType.CC, new InternetAddress(s, s));
+			  }
+		  }
+		  if(bccEmail != null) {
+			  for(String s:bccEmail) {
+				  msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(s, s));
+			  }
+		  }
+		  msg.setSubject(subject);
+		  Multipart mp = new MimeMultipart();
+		  MimeBodyPart htmlPart = new MimeBodyPart();
+		  htmlPart.setContent(content,"text/html");
+		  mp.addBodyPart(htmlPart);
+		  msg.setContent(mp);	 
+		  Transport.send(msg);
+		} catch (AddressException e) {
+			LOG.log(Level.SEVERE, e.getMessage());
+		} catch (MessagingException e) {
+			LOG.log(Level.SEVERE, e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			LOG.log(Level.SEVERE, e.getMessage());
+		}		
 	}
 }

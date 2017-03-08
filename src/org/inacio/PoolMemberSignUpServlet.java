@@ -253,6 +253,7 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 
 	public void receivePayment(HttpServletRequest req, HttpServletResponse resp) {
 		// HttpSession sess = req.getSession();
+		SimpleDateFormat dteFmt = new SimpleDateFormat("MM/dd/yyyy");
 		StringBuilder sb = new StringBuilder();
 		Member member = new Member();
 		String id = req.getParameter("id");
@@ -263,6 +264,23 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			member.setTransactionId(paypal);
 			member.setDatePaid(Calendar.getInstance().getTimeInMillis());
 			member.add();
+			String[] toEmail = new String[]{"adriene.madden@gmail.com","fredwisor@comcast.net","lbdavies@pahouse.net","jen.inacio@gmail.com"};
+			String[] ccEmail = null;
+			String[] bccEmail = null;
+			String frmEmail = "cinaciojr@gmail.com";
+			String subject = "WWH - New Membership";
+			StringBuilder content = new StringBuilder();
+			content.append("<html><body><h1>New Wedgewood Hills Swim Club Membership</h1></br/>");
+			content.append("New Member:  ").append(member.getName()).append("<br/>");
+			content.append("Rate: ").append(member.getRate()).append("<br/>");
+			Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(member.getDatePaid());
+			content.append("Paid: ").append(member.getTotalAmt()).append("  on ").append(dteFmt.format(c.getTime())).append("<br/>");
+			content.append("Individuals: ");
+			for(Individual i:individuals) { content.append(i.getName()).append("[").append(i.getGender()).append(Common.getAge(i.getDateOfBirth())).append("] ");}
+			content.append("<br/>");
+			content.append("</body></html>");
+			Common.sendEmail(toEmail, ccEmail, bccEmail, frmEmail, subject, content.toString());
 		}
 		sb.append(Common.getHeader());
 		sb.append("<body><a href=\"http://www.wedgewoodhillsswimclub.com\"><header></header></a><nav></nav>");
@@ -273,7 +291,6 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		sb.append("<tr><td colspan=2>&nbsp;</td></tr>");
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
 		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat dteFmt = new SimpleDateFormat("MM/dd/yyyy");
 		sb.append("<tr><td>").append(member.getName().trim()).append("</td><td>")
 				.append(formatter.format(member.getTotalAmt())).append("</td></tr>");
 		sb.append("<tr><td>&nbsp;</td><td>").append(dteFmt.format(cal.getTime())).append("</td></tr>");
