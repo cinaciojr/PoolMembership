@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +70,12 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		// String keyStr = KeyFactory.keyToString(k);
 		member.setId(k);
 		individuals = new ArrayList<Individual>();
-		for (int i = 0; i < 6; i++) {
+		int i = 0;
+		while (map.get("indname" + i) != null) {
+			if (((String[]) map.get("indname" + i))[0].trim().equals("")) {
+				i++;
+				continue;
+			}
 			Individual ind = new Individual();
 			String inddobmm = ((String[]) map.get("inddobmm" + i))[0].trim();
 			String inddobdd = ((String[]) map.get("inddobdd" + i))[0].trim();
@@ -88,10 +94,9 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			ind.setGender(((String[]) map.get("indgender" + i))[0]);
 			ind.setName(((String[]) map.get("indname" + i))[0].trim());
 			ind.setMemberId(member.getId());
-			if (!ind.getName().trim().isEmpty()) {
-				ind.setId(IndividualIO.add(ind));
-				individuals.add(ind);
-			}
+			ind.setId(IndividualIO.add(ind));
+			individuals.add(ind);
+			i++;
 		}
 		member.setTotalAmt(Common.computeAmt(member, individuals));
 		member.add();
@@ -256,6 +261,7 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		SimpleDateFormat dteFmt = new SimpleDateFormat("MM/dd/yyyy");
 		StringBuilder sb = new StringBuilder();
 		Member member = new Member();
+		ResponseEnvelope responseEnvelope = new ResponseEnvelope((HashMap<String, String>) req.getParameterMap());
 		String id = req.getParameter("id");
 		member = MemberIO.get(id);
 		ArrayList<Individual> individuals = IndividualIO.getIndividualsOfMember(member.getId());
@@ -264,7 +270,8 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			member.setTransactionId(paypal);
 			member.setDatePaid(Calendar.getInstance().getTimeInMillis());
 			member.add();
-			String[] toEmail = new String[]{"adriene.madden@gmail.com","fredwisor@comcast.net","lbdavies@pahouse.net","jen.inacio@gmail.com"};
+			String[] toEmail = new String[] { "adriene.madden@gmail.com", "fredwisor@comcast.net",
+					"lbdavies@pahouse.net", "jen.inacio@gmail.com" };
 			String[] ccEmail = null;
 			String[] bccEmail = null;
 			String frmEmail = "cinaciojr@gmail.com";
@@ -275,9 +282,13 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 			content.append("Rate: ").append(member.getRate()).append("<br/>");
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(member.getDatePaid());
-			content.append("Paid: ").append(member.getTotalAmt()).append("  on ").append(dteFmt.format(c.getTime())).append("<br/>");
+			content.append("Paid: ").append(member.getTotalAmt()).append("  on ").append(dteFmt.format(c.getTime()))
+					.append("<br/>");
 			content.append("Individuals: ");
-			for(Individual i:individuals) { content.append(i.getName()).append("[").append(i.getGender()).append(Common.getAge(i.getDateOfBirth())).append("] ");}
+			for (Individual i : individuals) {
+				content.append(i.getName()).append("[").append(i.getGender()).append(Common.getAge(i.getDateOfBirth()))
+						.append("] ");
+			}
 			content.append("<br/>");
 			content.append("</body></html>");
 			Common.sendEmail(toEmail, ccEmail, bccEmail, frmEmail, subject, content.toString());
@@ -300,6 +311,7 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		}
 		sb.append("<tr><td>&nbsp;</td><td>Member Id: E-").append(id.substring(id.length() - 5)).append("</td></tr>");
 		sb.append("</table></div>");
+		sb.append("<div>").append(responseEnvelope.toString()).append("</div");
 		Individual ind;
 		Calendar now = Calendar.getInstance();
 		for (int i = 0; i < individuals.size(); i++) {
@@ -367,23 +379,34 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		sb.append("<nav></nav>");
 		sb.append("<div class=registration id=registration>");
 		sb.append("<script>\r\n");
-		sb.append("function rateInfo() {");
-		sb.append("var rate = document.getElementById('rate');");
-		sb.append("document.getElementById('rateinfo').innerHTML = \"\";");
-		sb.append("var rateSelected = new String(rate.options[rate.options.selectedIndex].value).valueOf();");
-		sb.append("if(rateSelected == new String(\"family\").valueOf())").append(
-				"{ document.getElementById('rateinfo').innerHTML = \"<p>Family:  A family living in the same househould with a max of 2 adults, and up to 4 children.</p>\";}");
-		sb.append("if(rateSelected == new String(\"teen\").valueOf())").append(
-				"{ document.getElementById('rateinfo').innerHTML = \"<p>Teen:  An individual between the ages of 12 to 18.  Teen members are not permitted to purchase guest passes for other teens.  Teens must have a membership or come in as a guest of an adult.</p>\";}");
-		sb.append("document.getElementById('btnAddIndividual').disabled=false;");
-		sb.append("}\r\n");
+		// sb.append("function rateInfo() {");
+		// sb.append("var rate = document.getElementById('rate');");
+		// sb.append("document.getElementById('rateinfo').innerHTML = \"\";");
+		// sb.append("var rateSelected = new
+		// String(rate.options[rate.options.selectedIndex].value).valueOf();");
+		// sb.append("if(rateSelected == new
+		// String(\"family\").valueOf())").append(
+		// "{ document.getElementById('rateinfo').innerHTML = \"<p>Family: A
+		// family living in the same househould with a max of 2 adults, and up
+		// to 4 children.</p>\";}");
+		// sb.append("if(rateSelected == new
+		// String(\"teen\").valueOf())").append(
+		// "{ document.getElementById('rateinfo').innerHTML = \"<p>Teen: An
+		// individual between the ages of 12 to 18. Teen members are not
+		// permitted to purchase guest passes for other teens. Teens must have a
+		// membership or come in as a guest of an adult.</p>\";}");
+		// sb.append("document.getElementById('btnAddIndividual').disabled=false;");
+		// sb.append("}\r\n");
 		sb.append("function addIndividual() {");
 		sb.append("var i=0;");
 		sb.append("var indname = document.getElementsByName(\"indname\"+i);");
-		sb.append(
-				"while(indname != null && indname.length > 0) {i++;indname = document.getElementsByName(\"indname\"+i);}");
+		sb.append("var rate = document.getElementsByName('rate');");
 		sb.append("var max = -1;");
-		sb.append("var rateSelected = new String(rate.options[rate.selectedIndex].value).valueOf();");
+		sb.append("var rateSelected = new String('').valueOf();\r\n");
+		sb.append("for(i=0;i<rate.length;i++){if(rate[i].checked) rateSelected = rate[i].value;}\r\n");
+		sb.append("i=0;");
+		sb.append("while(indname != null && indname.length > 0) ")
+		.append("{i++;indname = document.getElementsByName(\"indname\"+i);}");
 		sb.append("if(rateSelected == new String(\"family\").valueOf()){max = -1;}");
 		sb.append("if(rateSelected == new String(\"teen\").valueOf()){max = 1;}");
 		sb.append("if(rateSelected == new String(\"single\").valueOf()){max = 1;}");
@@ -392,13 +415,15 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		sb.append("if(rateSelected == new String(\"seniorcouple\").valueOf()){max = 2;}");
 		sb.append("if(rateSelected == new String(\"babysitter\").valueOf()){max = 1;}");
 		sb.append(
-				"if(i >= max && max != -1) {alert('Max number of individuals for this rate plan'); document.getElementById('btnAddIndividual').disabled=true; return;}");
+				"if(rateSelected == new String('').valueOf()) {alert('Membership type must be selected first.'); return;}");
+		sb.append(
+				"if(i >= max && max != -1) {alert(rateSelected +': Max number of individuals for this rate plan.'); return;}");
 		sb.append("var tblIndviduals = document.getElementById('tblIndividuals');");
 		sb.append("var row = tblIndividuals.insertRow(-1);");
 		sb.append("var cell1 = row.insertCell(0);");
 		sb.append("var cell2 = row.insertCell(1);");
 		sb.append("var cell3 = row.insertCell(2);");
-		sb.append("cell1.innerHTML = \"<input name=indname\" + i + \" type=text />\";");
+		sb.append("cell1.innerHTML = \"<input name=indname\" + i + \" type=text size=30/>\";");
 		sb.append("cell2.innerHTML = \"").append("<select name=inddobmm\" + i + \" >")
 				.append("<option value=1 >Jan</option>").append("<option value=2 >Feb</option>")
 				.append("<option value=3 >Mar</option>").append("<option value=4 >Apr</option>")
@@ -434,66 +459,83 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		sb.append("</script>");
 		sb.append("<form method=POST />");
 		sb.append("<h2>Pool Registration</h2>");
-		sb.append("<table id=tblIndividuals >");
-		sb.append("<tbody><tr><td class=label>Name</td><td class=input><input type=text name=name /></td></tr>");
-		sb.append("<tr><td class=label>Address</td><td class=input><input type=text name=address /></td></tr>");
-		sb.append("<tr><td class=label>City State Zip</td><td class=input><input type=text name=csz /></td></tr>");
-		sb.append("<tr><td class=label>Phone</td><td class=input><input type=text name=phone /></td></tr>");
-		sb.append("<tr><td class=label>Email</td><td class=input><input type=text name=email /></td></tr>");
-		sb.append("<tr><td class=label>&nbsp;</td><td class=input>");
-		sb.append("<select id=rate name=rate onchange=\"rateInfo();\" oninput=\"rateInfo();\" >");
-		sb.append("<option selected value=family>Family (Max 2 Adults, up to 4 childern)</option>");
-		sb.append("<option value=babysitter>Baby Sitter</option>");
-		sb.append("<option value=couple>Couple</option>");
-		sb.append("<option value=single>Single</option>");
-		sb.append("<option value=senior>Senior Single</option>");
-		sb.append("<option value=seniorcouple>Senior Couple</option>");
-		sb.append("<option value=teen>Teen</option>");
-		sb.append("</select>");
-		sb.append("</td></tr>");
-		sb.append("<tr><td colspan=2>");
+		sb.append("<table>");
 		sb.append(
-				"<div id=rateinfo><p>Family:  A family living in the same househould with a max of 2 adults, and up to 4 children.</p></div>");
-		sb.append("</td></tr><tr><td colspan=2>");
-		sb.append("<h3>Individuals</h3>");
-		sb.append("</td></tr>");
+				"<tbody><tr><td class=label>Name</td><td class=input colspan=2><input type=text name=name size=20/></td></tr>");
+		sb.append(
+				"<tr><td class=label>Address</td><td class=input colspan=2><input type=text name=address size=30/></td></tr>");
+		sb.append(
+				"<tr><td class=label>City State Zip</td><td class=input colspan=2><input type=text name=csz size=30/></td></tr>");
+		sb.append(
+				"<tr><td class=label>Phone</td><td class=input colspan=2><input type=text name=phone maxlength=12 size=14/></td></tr>");
+		sb.append(
+				"<tr border=1><td class=label>Email</td><td class=input colspan=2><input type=text name=email size=30/></td></tr>");
+		sb.append("<tr border=1><td class=label>Rate:</td><td class=input>").append(
+				"<input type=radio name=rate required value=family />Family:</td><td>A family living in the same household with a max of 2 adults, and up to 4 children</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=babysitter />Babysitter:</td><td>An adult who will be primarly taking care of youth while at the pool.</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=couple />Couple:</td><td>Two Adults living in the same household.</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=single />Single:</td><td>A single adult membership.</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=senior />Senior:</td><td>A single senior adult membership.</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=seniorcouple />Senior Couple:</td><td>Two senior adults living in the same household.</td></tr>");
+		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(
+				"<input type=radio name=rate required value=teen />Teen:</td><td>An individual ages 12 - 18, teen membership doesn't allow the purchase of guest passes.</td></tr>");
+		// sb.append("<select id=rate name=rate onchange=\"rateInfo();\"
+		// oninput=\"rateInfo();\" >");
+		// sb.append("<option selected value=family>Family (Max 2 Adults, up to
+		// 4 childern)</option>");
+		// sb.append("<option value=babysitter>Baby Sitter</option>");
+		// sb.append("<option value=couple>Couple</option>");
+		// sb.append("<option value=single>Single</option>");
+		// sb.append("<option value=senior>Senior Single</option>");
+		// sb.append("<option value=seniorcouple>Senior Couple</option>");
+		// sb.append("<option value=teen>Teen</option>");
+		// sb.append("</select>");
+		// sb.append("</td></tr>");
+		// sb.append("<tr><td colspan=2>");
+		// sb.append(
+		// "<div id=rateinfo><p>Family: A family living in the same househould
+		// with a max of 2 adults, and up to 4 children.</p></div>");
+		// sb.append("</td></tr>");
+		sb.append(
+				"</table><br/><hr><br/><table class=tblIndividuals id=tblIndividuals><th colspan=3><h3>Individuals</h3></th></tr>");
 		sb.append("<tr><th>Name</th><th>Date of Birth</th><th>Gender</th></tr>");
-		for (int i = 0; i < 1; i++) {
-			sb.append("<tr><td><input name=indname" + i + " type=text /></td>")
-					// .append("<td><input type=text
-					// name=inddob").append(i).append(" /></td>")
-					.append("<td><select name=inddobmm").append(i).append(" >").append("<option value=1 >Jan</option>")
-					.append("<option value=2 >Feb</option>").append("<option value=3 >Mar</option>")
-					.append("<option value=4 >Apr</option>").append("<option value=5 >May</option>")
-					.append("<option value=6 >Jun</option>").append("<option value=7 >Jul</option>")
-					.append("<option value=8 >Aug</option>").append("<option value=9 >Sep</option>")
-					.append("<option value=10 >Oct</option>").append("<option value=11 >Nov</option>")
-					.append("<option value=12 >Dec</option>").append("</select>").append("<select name=inddobdd")
-					.append(i).append(">").append("<option value=1 >1</option>").append("<option value=2 >2</option>")
-					.append("<option value=3 >3</option>").append("<option value=4 >4</option>")
-					.append("<option value=5 >5</option>").append("<option value=6 >6</option>")
-					.append("<option value=7 >7</option>").append("<option value=8 >8</option>")
-					.append("<option value=9 >9</option>").append("<option value=10 >10</option>")
-					.append("<option value=11 >11</option>").append("<option value=12 >12</option>")
-					.append("<option value=13 >13</option>").append("<option value=14 >14</option>")
-					.append("<option value=15 >15</option>").append("<option value=16 >16</option>")
-					.append("<option value=17 >17</option>").append("<option value=18 >18</option>")
-					.append("<option value=19 >19</option>").append("<option value=20 >20</option>")
-					.append("<option value=21 >21</option>").append("<option value=22 >22</option>")
-					.append("<option value=23 >23</option>").append("<option value=24 >24</option>")
-					.append("<option value=25 >25</option>").append("<option value=26 >26</option>")
-					.append("<option value=27 >27</option>").append("<option value=28 >28</option>")
-					.append("<option value=29 >29</option>").append("<option value=30 >30</option>")
-					.append("<option value=31 >31</option>").append("</select>").append("<select name=inddobyyyy")
-					.append(i).append(">");
-			Calendar cal = Calendar.getInstance();
-			for (int yy = cal.get(Calendar.YEAR); yy > (cal.get(Calendar.YEAR) - 100); yy--) {
-				sb.append("<option value=").append(yy).append(">").append(yy).append("</option>");
-			}
-			sb.append("</select></td>");
-			sb.append("<td><select name=indgender").append(i)
-					.append("><option value=F >Female</option><option value=M >Male</option></select</td></tr>");
+		sb.append("<tr><td><input name=indname0 type=text size=30/></td>")
+				// .append("<td><input type=text
+				// name=inddob").append(i).append(" /></td>")
+				.append("<td><select name=inddobmm0 >").append("<option value=1 >Jan</option>")
+				.append("<option value=2 >Feb</option>").append("<option value=3 >Mar</option>")
+				.append("<option value=4 >Apr</option>").append("<option value=5 >May</option>")
+				.append("<option value=6 >Jun</option>").append("<option value=7 >Jul</option>")
+				.append("<option value=8 >Aug</option>").append("<option value=9 >Sep</option>")
+				.append("<option value=10 >Oct</option>").append("<option value=11 >Nov</option>")
+				.append("<option value=12 >Dec</option>").append("</select>").append("<select name=inddobdd0 >")
+				.append("<option value=1 >1</option>").append("<option value=2 >2</option>")
+				.append("<option value=3 >3</option>").append("<option value=4 >4</option>")
+				.append("<option value=5 >5</option>").append("<option value=6 >6</option>")
+				.append("<option value=7 >7</option>").append("<option value=8 >8</option>")
+				.append("<option value=9 >9</option>").append("<option value=10 >10</option>")
+				.append("<option value=11 >11</option>").append("<option value=12 >12</option>")
+				.append("<option value=13 >13</option>").append("<option value=14 >14</option>")
+				.append("<option value=15 >15</option>").append("<option value=16 >16</option>")
+				.append("<option value=17 >17</option>").append("<option value=18 >18</option>")
+				.append("<option value=19 >19</option>").append("<option value=20 >20</option>")
+				.append("<option value=21 >21</option>").append("<option value=22 >22</option>")
+				.append("<option value=23 >23</option>").append("<option value=24 >24</option>")
+				.append("<option value=25 >25</option>").append("<option value=26 >26</option>")
+				.append("<option value=27 >27</option>").append("<option value=28 >28</option>")
+				.append("<option value=29 >29</option>").append("<option value=30 >30</option>")
+				.append("<option value=31 >31</option>").append("</select>").append("<select name=inddobyyyy0 >");
+		Calendar cal = Calendar.getInstance();
+		for (int yy = cal.get(Calendar.YEAR); yy > (cal.get(Calendar.YEAR) - 100); yy--) {
+			sb.append("<option value=").append(yy).append(">").append(yy).append("</option>");
 		}
+		sb.append("</select></td>");
+		sb.append("<td><select name=indgender0 ><option value=F >Female</option><option value=M >Male</option></select</td></tr>");
 		sb.append("</table>");
 		sb.append("<input type=button value=\"Add Individual\" onclick=\"addIndividual();\" id=btnAddIndividual >");
 		sb.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");

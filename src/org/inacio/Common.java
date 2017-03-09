@@ -32,7 +32,7 @@ public class Common {
 		int child = 0;
 		int teen = 0;
 		for(Individual i:individuals) {
-			if(i.isAdult()) {adult++;}	
+			if(getAge(i.getDateOfBirth()) > 17) {adult++;}	
 			else if(getAge(i.getDateOfBirth()) > 11) { teen++; }	
 			else { child++; }			
 			
@@ -109,6 +109,7 @@ public class Common {
 		sb.append(".babysitter {}");
 		sb.append(".senior {}");
 		sb.append(".seniorcouple {}");
+		sb.append(".tblIndividuals th {vertical-align: bottom; text-align: left;}");
 		sb.append(".minor {border: 4px solid blue;}");
 		return sb.toString();
 	}
