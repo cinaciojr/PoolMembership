@@ -66,6 +66,7 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 		member.setName(((String[]) map.get("name"))[0].trim());
 		member.setPhone(((String[]) map.get("phone"))[0].trim());
 		member.setRate(((String[]) map.get("rate"))[0].trim());
+		member.setReferral(((String[]) map.get("refferal"))[0].trim());
 		com.google.appengine.api.datastore.Key k = member.add();
 		// String keyStr = KeyFactory.keyToString(k);
 		member.setId(k);
@@ -470,6 +471,7 @@ public class PoolMemberSignUpServlet extends HttpServlet {
 				"<tr><td class=label>Phone</td><td class=input colspan=2><input type=text name=phone maxlength=12 size=14/></td></tr>");
 		sb.append(
 				"<tr border=1><td class=label>Email</td><td class=input colspan=2><input type=text name=email size=30/></td></tr>");
+		sb.append("<tr><td class=label>Referred By (to be completed by New Members Only):</td><td class=input colspan=2><input type=text name=referral size=30 /</td></tr>");
 		sb.append("<tr border=1><td class=label>Rate:</td><td class=input>").append(
 				"<input type=radio name=rate required value=family />Family:</td><td>A family living in the same household with a max of 2 adults, and up to 4 children</td></tr>");
 		sb.append("<tr border=1><td class=label>&nbsp;</td><td class=input>").append(

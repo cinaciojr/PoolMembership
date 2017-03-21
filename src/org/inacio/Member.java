@@ -13,6 +13,7 @@ public class Member {
 	private double totalAmt;
 	private long datePaid;
 	private String transactionId;
+	private String referral;
 	/**
 	 * @return the id
 	 */
@@ -134,6 +135,18 @@ public class Member {
 		this.transactionId = transactionId;
 	}
 	
+	/**
+	 * @return the referral
+	 */
+	public String getReferral() {
+		return referral;
+	}
+	/**
+	 * @param referral the referral to set
+	 */
+	public void setReferral(String referral) {
+		this.referral = referral;
+	}
 	public Key add() {
 		return MemberIO.add(this);	
 	}

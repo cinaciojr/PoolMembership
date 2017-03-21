@@ -73,6 +73,7 @@ public class MemberIO {
 			m.setRate((String) e.getProperty("rate"));
 			m.setTotalAmt((double) e.getProperty("totalamt"));
 			m.setTransactionId((String) e.getProperty("transactionid"));
+			m.setReferral((String) e.getProperty("referral"));
 		}
 		return m;		
 	}
@@ -100,6 +101,7 @@ public class MemberIO {
 		e.setProperty("rate", m.getRate());
 		e.setProperty("totalamt", m.getTotalAmt());
 		e.setProperty("transactionid", m.getTransactionId());
+		e.setProperty("referral", m.getReferral());
 		Key k = datastore.put(e);
 		m.setId(k);
 		return k;
